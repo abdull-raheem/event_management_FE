@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Table, Row } from "react-bootstrap";
+import {Table, Row } from "react-bootstrap";
 import styled from "styled-components";
 import CreateEvent from "./CreateEvent";
 import axios from "../services/api";
-import { BsCalendar } from "react-icons/bs";
 import { AiOutlineEnvironment } from "react-icons/ai";
 
-const JoinEventContainer = styled.div`
+const JoinedEventsContainer = styled.div`
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
@@ -43,16 +42,26 @@ const StyledTable = styled(Table)`
       background-color: #f0f8ff;
     }
   }
+
+  .delete-button {
+    background-color: #dc3545;
+    border-color: #dc3545;
+  }
+
+  .delete-button:hover {
+    background-color: #c82333;
+    border-color: #c82333;
+  }
 `;
 
-const JoinEvent = () => {
+const JoinedEvents = () => {
   const [events, setEvents] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const response = await axios.get("/api/events/get_events");
+        const response = await axios.get("/api/events/joined_events");
         setEvents(response.data);
       } catch (error) {
         console.error("Error fetching events:", error);
@@ -67,11 +76,11 @@ const JoinEvent = () => {
   };
 
   return (
-    <JoinEventContainer>
+    <JoinedEventsContainer>
       <CreateEvent showModal={showModal} handleCloseModal={handleCloseModal} />
 
       <Row className="align-items-center">
-          <EventHeading>New Events to Join</EventHeading>
+        <EventHeading>Joined Events</EventHeading>
       </Row>
 
       <StyledTable striped bordered hover responsive>
@@ -81,7 +90,6 @@ const JoinEvent = () => {
             <th>Description</th>
             <th>Date</th>
             <th>Location</th>
-            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -94,14 +102,6 @@ const JoinEvent = () => {
                 <td>{event.name}</td>
                 <td>{event.description}</td>
                 <td>
-                  <BsCalendar />{" "}
-                  {new Date(event.date).toLocaleDateString("en-US", {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
-                </td>
-                <td>
                   <AiOutlineEnvironment /> {event.location}
                 </td>
               </tr>
@@ -113,8 +113,8 @@ const JoinEvent = () => {
           )}
         </tbody>
       </StyledTable>
-    </JoinEventContainer>
+    </JoinedEventsContainer>
   );
 };
 
-export default JoinEvent;
+export default JoinedEvents;
